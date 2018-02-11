@@ -1,23 +1,19 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import ChatMessages from './ChatMessages';
 
 class ChatBot extends React.Component {
   
   state = {
-    table_number: ''
+    email: ''
   }
 
-  onTableNoChange = (e) => {
-    const table_number = e.target.value;
-    this.setState({table_number});
+  onEmailChange = (e) => {    
+    const email = e.target.value;
+    this.setState({email});
   }
 
   onSubmit = (e) => {
-    e.preventDefault();
-    this.props.dispatch({type: 'SET_TABLE_NUMBER', table_number: this.state.table_number});
-    this.props.history.push('/dashboard');
+    e.preventDefault();    
   }
 
   render(props) {
@@ -31,7 +27,7 @@ class ChatBot extends React.Component {
             <div className="jumbotron">          
               <form onSubmit={this.onSubmit}>
                 <h1>
-                  <input type="text" name='txtTableNumber' placeholder='Email' value={this.state.table_number} onChange={this.onTableNoChange} />
+                  <input type="text" name='txtEmail' placeholder='Email' value={this.state.email} onChange={this.onEmailChange} />
                 </h1>
               </form>
             </div>
@@ -44,7 +40,7 @@ class ChatBot extends React.Component {
           <div className="col-lg-6">
             <div className="ibox">
               <div className="ibox-content">
-                <ChatMessages />
+                <ChatMessages messages={this.state.email} />
               </div>
             </div>
           </div>
@@ -54,4 +50,4 @@ class ChatBot extends React.Component {
   }  
 }
 
-export default connect()(ChatBot);
+export default ChatBot;

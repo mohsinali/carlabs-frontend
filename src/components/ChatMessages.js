@@ -3,7 +3,8 @@ import React from 'react';
 class ChatMessages extends React.Component {
   render(props) {
     return (
-      <div>              
+      <div>
+        {this.props.messages}
         <div>
           <div className="chat-activity-list">
             <div className="chat-element">
