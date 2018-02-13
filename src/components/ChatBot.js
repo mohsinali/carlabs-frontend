@@ -1,10 +1,12 @@
 import React from 'react';
 import ChatMessages from './ChatMessages';
+import axios from 'axios';
 
 class ChatBot extends React.Component {
   
   state = {
-    email: ''
+    email: '',    
+    chats: ''
   }
 
   onEmailChange = (e) => {    
@@ -13,8 +15,17 @@ class ChatBot extends React.Component {
   }
 
   onSubmit = (e) => {
-    e.preventDefault();    
+    e.preventDefault();
+    axios.get('http://localhost:3000/users/' + this.state.email)
+      .then(response => {
+        this.setState({chats: response.data.user.chats});
+        console.log(response.data.user);
+      })
+      .catch(error => {
+        console.log('Error fetching and parsing data', error);
+      });
   }
+
 
   render(props) {
     return (
@@ -39,8 +50,8 @@ class ChatBot extends React.Component {
         <div className="row">
           <div className="col-lg-6">
             <div className="ibox">
-              <div className="ibox-content">
-                <ChatMessages messages={this.state.email} />
+              <div className="ibox-content">                
+              <ChatMessages chats={this.state.chats} />
               </div>
             </div>
           </div>
