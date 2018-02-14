@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import Simplert from 'react-simplert';
 
 import ChatMessages from './ChatMessages';
 import { addMessage } from '../actions/Messages_Action';
@@ -9,7 +10,11 @@ import axios from 'axios';
 class ChatBot extends React.Component {
   
   state = {
-    email: ''
+    email: '',
+    showAlert: false,
+    typeAlert: "",
+    titleAlert: "",
+    messageAlert: ""
   }
 
   handleAddMessage = (message) => {
@@ -18,18 +23,40 @@ class ChatBot extends React.Component {
 
   onEmailChange = (e) => {
     const email = e.target.value;
-    this.setState({email});       
+    this.setState({email});
+  }
+
+  createUser = (email) => {
+    axios.post("http://localhost:3000/users", {email}).then((response) => {
+      if(response.data.error){
+        console.log(response.data.message);        
+      }else{        
+        this.setState({
+              showAlert: true, 
+              titleAlert: "New User", 
+              typeAlert: "success", 
+              messageAlert: "Your account has been created. You check weather now :)"
+            });
+      }
+    });
   }
 
   onSubmit = (e) => {
     e.preventDefault();
+    
+    // Get users info from server
     axios.get('http://localhost:3000/users/' + this.state.email)
-      .then(response => {
-        
-        // Initialize Redux store with existing chat messages
-        _.forEach(response.data.user.chats, (chat) => {
-          this.handleAddMessage(chat);    
-        });
+      .then(response => {        
+        if(response.data.error){
+          console.log(response.data.message);
+          this.createUser(this.state.email);
+        }else{
+          // Initialize Redux store with existing chat messages
+          _.forEach(response.data.user.chats, (chat) => {
+            this.handleAddMessage(chat);    
+          });
+        }
+
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
@@ -61,7 +88,13 @@ class ChatBot extends React.Component {
           <div className="col-lg-6">
             <div className="ibox">
               <div className="ibox-content">                
-              <ChatMessages />
+              <ChatMessages />              
+              <Simplert
+                showSimplert={ this.state.showAlert }
+                type={ this.state.typeAlert }
+                title={ this.state.titleAlert }
+                message={ this.state.messageAlert }
+                />
               </div>
             </div>
           </div>
