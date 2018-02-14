@@ -1,25 +1,35 @@
 import React from 'react';
+import _ from 'lodash';
+
 import ChatMessages from './ChatMessages';
+import { connect } from 'react-redux';
+import { addMessage } from '../actions/Messages_Action';
 import axios from 'axios';
 
 class ChatBot extends React.Component {
   
   state = {
-    email: '',    
-    chats: ''
+    email: ''
   }
 
-  onEmailChange = (e) => {    
+  handleAddMessage = (message) => {
+    this.props.dispatch(addMessage(message));
+  }
+
+  onEmailChange = (e) => {
     const email = e.target.value;
-    this.setState({email});
+    this.setState({email});       
   }
 
   onSubmit = (e) => {
     e.preventDefault();
     axios.get('http://localhost:3000/users/' + this.state.email)
       .then(response => {
-        this.setState({chats: response.data.user.chats});
-        console.log(response.data.user);
+        
+        // Initialize Redux store with existing chat messages
+        _.forEach(response.data.user.chats, (chat) => {
+          this.handleAddMessage(chat);    
+        });
       })
       .catch(error => {
         console.log('Error fetching and parsing data', error);
@@ -51,7 +61,7 @@ class ChatBot extends React.Component {
           <div className="col-lg-6">
             <div className="ibox">
               <div className="ibox-content">                
-              <ChatMessages chats={this.state.chats} />
+              <ChatMessages />
               </div>
             </div>
           </div>
@@ -60,5 +70,10 @@ class ChatBot extends React.Component {
     )
   }  
 }
+const mapStateToProps = (state) => {
+  return {
+    chat_messages: state.chat_messages
+  }
+}
 
-export default ChatBot;
+export default connect(mapStateToProps)(ChatBot);
