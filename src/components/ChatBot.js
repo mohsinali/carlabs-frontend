@@ -1,10 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import ChatMessages from './ChatMessages';
-import { connect } from 'react-redux';
 import { addMessage } from '../actions/Messages_Action';
 import axios from 'axios';
+
 
 class ChatBot extends React.Component {
   
