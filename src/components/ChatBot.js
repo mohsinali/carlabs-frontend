@@ -6,7 +6,6 @@ import ChatMessages from './ChatMessages';
 import { addMessage } from '../actions/Messages_Action';
 import axios from 'axios';
 
-
 class ChatBot extends React.Component {
   
   state = {

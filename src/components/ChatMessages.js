@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import { addMessage } from '../actions/Messages_Action';
 import MessageItem_Left from './MessageItem_Left';
 import MessageItem_Right from './MessageItem_Right';
+import ChatMessageClass from '../helpers/ChatMessage_Class';
 
 class ChatMessages extends React.Component {  
   state = {
@@ -17,14 +19,26 @@ class ChatMessages extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    const timeStamp = Math.floor(Date.now());
-    const objMessage = {
-      _id: timeStamp,
-      message: this.state.user_message,
-      sender: 'user'
-    }
+
+    // Construct message object
+    const objMessage = new ChatMessageClass(this.state.user_message, 'user');
+    
+    // Dispatch message to redux
     this.props.dispatch(addMessage(objMessage));
+
+    // Get dialogflow's response against user's message
+    this.getResponseFromDialogflow(this.state.user_message);
+
+    // Reset message input field
     this.setState({user_message: ""});
+  }
+
+  getResponseFromDialogflow = (message) => {
+    axios.post('http://localhost:3000/dialogflow', {email: "mohsin@yahoo.com", message: message})
+      .then((response) => {
+        const objMessage = new ChatMessageClass(response.data.message, 'bot');
+        this.props.dispatch(addMessage(objMessage));        
+      });    
   }
   
   render(props) {    
