@@ -35,7 +35,7 @@ class ChatMessages extends React.Component {
   }
 
   getResponseFromDialogflow = (message) => {
-    axios.post('http://localhost:3000/dialogflow', {email: "mohsin@gmail.com", message: message})
+    axios.post('http://localhost:3000/dialogflow', {email: this.props.email, message: message})
       .then((response) => {
         const objMessage = new ChatMessageClass(response.data.message, 'bot');
         this.props.dispatch(addMessage(objMessage));        

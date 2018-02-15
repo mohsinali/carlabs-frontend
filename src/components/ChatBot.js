@@ -16,11 +16,17 @@ class ChatBot extends React.Component {
     showAlert: false,
     typeAlert: "",
     titleAlert: "",
-    messageAlert: ""
+    messageAlert: ""    
   }
 
   handleAddMessage = (message) => {
     this.props.dispatch(addMessage(message));
+  }
+
+  reset_alert = () => {
+    return () => {
+      this.setState({showAlert: false});
+    }
   }
 
   onEmailChange = (e) => {
@@ -37,8 +43,8 @@ class ChatBot extends React.Component {
               showAlert: true, 
               titleAlert: "New User", 
               typeAlert: "success", 
-              messageAlert: "Your account has been created. You can check the weather now :)"
-            });
+              messageAlert: "Your account has been created. You can check the weather now :)",
+            });                
       }
     });
   }
@@ -107,7 +113,8 @@ class ChatBot extends React.Component {
           showSimplert={ this.state.showAlert }
           type={ this.state.typeAlert }
           title={ this.state.titleAlert }
-          message={ this.state.messageAlert }                
+          message={ this.state.messageAlert } 
+          onClose={this.reset_alert()}               
           />
       </div>
     )
