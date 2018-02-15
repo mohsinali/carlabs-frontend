@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import renderIf from 'render-if';
 
 import { addMessage } from '../actions/Messages_Action';
 import MessageItem_Left from './MessageItem_Left';
@@ -77,7 +78,8 @@ class ChatMessages extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    chat_messages: state.chat_messages
+    chat_messages: state.chat_messages,
+    email: state.email
   }
 }
 
